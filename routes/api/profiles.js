@@ -5,7 +5,8 @@ const router = express.Router()
 const jwt = require('jsonwebtoken')
 const config = require('config')
 const {check, validationResult} = require('express-validator')
-const Profile = require('../../models/Profile')
+const Profile = require('../../models/ProfileSchema')
+const auth = require('../../middleware/auth')
 
 // @route       POST api/profiles
 // @desc        Register profile
@@ -45,18 +46,19 @@ router.post('/', [
         })
         
         // Encrypt password
-        const salt = await bcrypt.genSalt(10);
+        const salt = await bcrypt.genSalt(8);
         profile.password = await bcrypt.hash(password, salt)
-        await profile.save()                                    // WHY THE FUCK DOESNT THIS WORK?
-        console.log("GREAT SUCCESS")
+        profile.markModified('password')
+        await profile.save()
 
-        // Return JSON webtoken
+        // Encode profile ID into JSON Web Token
          const payload = {
             profile: {
                 id: profile.id
             }
         }
 
+        // Return JWT
         jwt.sign(payload, config.get('jwtSecret'), {expiresIn: 36000}, (err, token) => {
             if(err){
                 throw err
@@ -71,12 +73,29 @@ router.post('/', [
 })
 
 // @route       GET api/profiles
-// @desc        Get all profile
+// @desc        Get all profiles
 // @access      Public
 
 router.get('/', async (req, res) => {
     let profiles = await Profile.find()
-    res.json(profiles)
+
+    // Remove email and encrypted password before returning profiles
+    let profileList = []
+
+    profiles.map((prof) => {                // Loop through each profile in the array
+
+        profileList.push({                  // Append desired fields to the profileList object
+            firstName : prof.firstName,
+            lastName : prof.lastName,
+            id: prof.id,
+            grade : prof.grade,
+            journals : prof.journals,
+            artworks : prof.artworks,
+            collections : prof.collections
+        })
+
+    })
+    res.json(profileList)                   // Return profiles after excluding email and password
 })
 
 // @route       GET api/profiles/:id
@@ -102,7 +121,92 @@ router.get('/:id', async (req, res) => {
 
 })
 
+// @route       POST api/profiles/login
+// @desc        Login user
+// @access      Public
+router.post("/login", [
+    check("email", "Please include email").isEmail(),
+    check("password", "Enter password").exists()
+], async (req, res) => {
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array()})
+    }
 
+    if(req.body == null){
+        res.status(400).json({ error: "Bad Request"})
+    }
+
+    try{
+        if(req.body != null){
+            const {email, password } = req.body
+        
+        // See if user exists
+            let profile = await Profile.findOne({email})
+
+            if(!profile){
+                res.status(400).json({ errors: [{msg: "Invalid Credentials - No User"}]})
+            }
+
+
+            const isMatch = await bcrypt.compare(password, profile.password)
+            if(!isMatch){
+                res.status(400).json({ errors: [{msg: "Invalid Credentials"}]})
+            }
+
+        // Return JSON webtoken
+            const payload = {
+                profile: {
+                    id: profile.id
+                }
+            }
+
+            jwt.sign(payload, config.get('jwtSecret'), {expiresIn: 36000}, (err, token) => {
+                if(err){
+                    throw err
+                } else {
+                    res.json({token})
+                }
+            })
+        }
+    } catch(err){
+        console.log(err.message)
+        // res.status(500).send('Server Error...wddwwd')
+    }
+
+})
+
+// @route       GET api/profiles/stats/all
+// @desc        Get profiles stats
+// @access      Public
+
+router.get("/stats/all", async (req, res) => {
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array()})
+    }
+
+    try {
+        let profiles = await Profile.find()
+
+        let profileStats = [["Name", "Grade", "Artworks", "Journals", "Collections"]]
+
+        profiles.forEach((profile) => {
+            profileStats.push([profile.firstName + " " + profile.lastName, profile.grade, profile.artworks.length, profile.journals.length, profile.collections.length])
+        })
+
+        profiles = ""
+
+        res.json(profileStats)
+
+    } catch (error) {
+        
+    }
+
+    
+
+})
 
 
 module.exports = router
+

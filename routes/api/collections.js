@@ -8,23 +8,23 @@ const {check, validationResult} = require('express-validator')
 const Profile = require('../../models/ProfileSchema')
 const auth = require('../../middleware/auth')
 
-// @route       POST api/profiles:id/journal
-// @desc        Post journal
+// @route       POST api/profiles:id/collections
+// @desc        Post collection
 // @access      Private
-router.post('/:id/journal', auth, async (req, res) => {
+router.post('/:id/collections', auth, async (req, res) => {
     const profile = await Profile.findById(req.params.id)         // Fetch profile
 
     if(!profile){
         res.status(400).json({msg: "This artist does not exist"})
     }
 
-    const post = {
+    const collection = {
         title: req.body.title,
-        body: req.body.body,
+        desc: req.body.desc,
         artworks: req.body.artworks
     }
 
-    profile.journals.push(post)
+    profile.collections.push(collection)
 
     await profile.save()
 
@@ -32,10 +32,10 @@ router.post('/:id/journal', auth, async (req, res) => {
 
 })
 
-// @route       DEL api/profiles:id/journal/:index
-// @desc        Delete journal
+// @route       DEL api/profiles:id/collections/:index
+// @desc        Delete collection
 // @access      Private
-router.delete('/:id/journal/:index', auth, async (req, res) => {
+router.delete('/:id/collections/:index', auth, async (req, res) => {
     const profile = await Profile.findById(req.params.id)         // Fetch profile
 
     if(!profile){
@@ -44,21 +44,21 @@ router.delete('/:id/journal/:index', auth, async (req, res) => {
 
     const index = req.params.index
 
-    if(index > profile.journals.length - 1 || index < profile.journals.length - 1){
-        res.status(400).json({msg: "This journal does not exist"})
+    if(index > profile.collections.length - 1 || index < profile.collections.length - 1){
+        res.status(400).json({msg: "This collection does not exist"})
     }
 
-    profile.journals.splice(index, 1)
+    profile.collections.splice(index, 1)
 
     await profile.save()
 
     res.json(profile)
 })
 
-// @route       POST api/profiles:id/journal/:index
-// @desc        Edit journal
+// @route       POST api/profiles:id/collections/:index
+// @desc        Edit collection
 // @access      Private
-router.post('/:id/journal/:index', auth, async (req, res) => {
+router.post('/:id/collections/:index', auth, async (req, res) => {
     const profile = await Profile.findById(req.params.id)         // Fetch profile
 
     if(!profile){
@@ -67,27 +67,27 @@ router.post('/:id/journal/:index', auth, async (req, res) => {
 
     const index = req.params.index
 
-    if(index > profile.journals.length - 1 || index < profile.journals.length - 1){
-        res.status(400).json({msg: "This journal does not exist"})
+    if(index > profile.collections.length - 1 || index < profile.collections.length - 1){
+        res.status(400).json({msg: "This collection does not exist"})
     }
 
     const post = {
         title: req.body.title,
-        body: req.body.body,
+        desc: req.body.desc,
         artworks: req.body.artworks
     }
 
-    profile.journals[index] = post
+    profile.collections[index] = post
 
     await profile.save()
 
     res.json(profile)
 })
 
-// @route       GET api/profiles:id/journal/:index
-// @desc        Get journal
+// @route       GET api/profiles:id/collection/:index
+// @desc        Get collection
 // @access      Public
-router.get('/:id/journal/:index', async (req, res) => {
+router.get('/:id/collections/:index', async (req, res) => {
     const profile = await Profile.findById(req.params.id)         // Fetch profile
 
     if(!profile){
@@ -96,12 +96,11 @@ router.get('/:id/journal/:index', async (req, res) => {
 
     const index = req.params.index
 
-    if(index > profile.journals.length - 1 || index < profile.journals.length - 1){
-        res.status(400).json({msg: "This journal does not exist"})
+    if(index > profile.collections.length - 1 || index < profile.collections.length - 1){
+        res.status(400).json({msg: "This collections does not exist"})
     }
 
-    res.json(profile.journals[index])
+    res.json(profile.collections[index])
 })
 
 module.exports = router
-

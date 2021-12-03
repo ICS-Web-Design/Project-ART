@@ -2,11 +2,7 @@ const mongoose = require('mongoose')
 
 
 const ProfileSchema = new mongoose.Schema({
-    // id: {
-    //     type: Number,
-    //     required: true,
-    //     unique: true
-    // },
+    
     firstName: {
         type: String,
         required: true
@@ -33,4 +29,4 @@ const ProfileSchema = new mongoose.Schema({
     collections: []
 })
 
-module.exports = Profile = mongoose.model('Profile', ProfileSchema)
+module.exports = Profile = mongoose.model('profile', ProfileSchema)
