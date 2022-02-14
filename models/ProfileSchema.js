@@ -20,7 +20,7 @@ const ProfileSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    grade: {
+    classOf: {
         type: Number,
         required: true,
     },

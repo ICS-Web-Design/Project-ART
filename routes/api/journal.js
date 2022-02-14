@@ -13,7 +13,7 @@ const auth = require('../../middleware/auth')
 // @access      Private
 router.post('/:id/journal', auth, async (req, res) => {
     const profile = await Profile.findById(req.params.id)         // Fetch profile
-
+    console.log(profile)
     if(!profile){
         res.status(400).json({msg: "This artist does not exist"})
     }

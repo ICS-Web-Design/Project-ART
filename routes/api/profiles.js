@@ -16,7 +16,7 @@ router.post('/', [
     check('lastName', 'Last name is required').not().isEmpty(),
     check("email", "Please include email").isEmail(),
     check("password", "Enter password").isLength({ min: 6 }),
-    check('grade', 'Grade is required').not().isEmpty(),
+    check('classOf', 'Graduation year is required').not().isEmpty(),
 ], async (req, res) => {
     const errors = validationResult(req)                        // Checks request for errors
 
@@ -25,7 +25,7 @@ router.post('/', [
         // Returns a bad request message alongside errors array
     }
 
-    const {firstName, lastName, email, password, grade} = req.body
+    const {firstName, lastName, email, password, classOf} = req.body
 
     try {
         
@@ -42,7 +42,7 @@ router.post('/', [
             lastName,
             email,
             password,
-            grade
+            classOf
         })
         
         // Encrypt password
@@ -88,7 +88,7 @@ router.get('/', async (req, res) => {
             firstName : prof.firstName,
             lastName : prof.lastName,
             id: prof.id,
-            grade : prof.grade,
+            classOf : prof.classOf,
             journals : prof.journals,
             artworks : prof.artworks,
             collections : prof.collections
@@ -189,10 +189,10 @@ router.get("/stats/all", async (req, res) => {
     try {
         let profiles = await Profile.find()
 
-        let profileStats = [["Name", "Grade", "Artworks", "Journals", "Collections"]]
+        let profileStats = [["Name", "Class", "Artworks", "Journals", "Collections"]]
 
         profiles.forEach((profile) => {
-            profileStats.push([profile.firstName + " " + profile.lastName, profile.grade, profile.artworks.length, profile.journals.length, profile.collections.length])
+            profileStats.push([profile.firstName + " " + profile.lastName, profile.classOf, profile.artworks.length, profile.journals.length, profile.collections.length])
         })
 
         profiles = ""
