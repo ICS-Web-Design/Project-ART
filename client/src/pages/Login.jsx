@@ -66,7 +66,7 @@ function Login() {
                 <input className="u-full-width" type="password" name="password" id="password" placeholder='Enter Password'/>
 
                 <input className="u-full-width" type="password" name="confPassword" id="confPassword" placeholder='Confirm Password'/>
-                <button>Login</button>
+                <button>Register</button>
                 <br />
                 <span onClick={handleLogin}>Login</span>
             </div>
