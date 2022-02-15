@@ -448,3 +448,7 @@
   background-color: #8b0000;
   color: white;
 }
+/* ICS Logo */
+.topnav a.logo {
+  background-color: #F71B1B;
+}
