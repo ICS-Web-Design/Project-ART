@@ -439,7 +439,7 @@
 
 /* Change the color of links on hover */
 .topnav a:hover {
-  background-color: rgb(83, 157, 241);
+  background-color: rgb(34, 36, 153);
   color: #ffffff;
 }
 
