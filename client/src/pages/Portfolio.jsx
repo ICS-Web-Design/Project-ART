@@ -96,7 +96,7 @@ function Portfolio() {
 
                 <button type="submit">Submit</button>
                 <br />
-                <button onClick={() => {setView('dashboard')}}>Cancel</button>
+                <button onClick={() => {setView('journal')}}>Cancel</button>
             </div>
         )
     }
