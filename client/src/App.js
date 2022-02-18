@@ -9,6 +9,18 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import Portfolio from './pages/Portfolio';
 
+import axios from 'axios'
+
+axios.interceptors.response.use((response) => {
+  return response
+}, (err) => {
+  if(err.response.status == 401){
+    localStorage.setItem('token', 'false');
+    localStorage.setItem('profile', null)
+  }
+  return Promise.reject(err);
+});
+
 function App() {
   
   // const [auth, setAuth] = useState('false')

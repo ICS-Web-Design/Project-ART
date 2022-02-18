@@ -8,6 +8,24 @@ const {check, validationResult} = require('express-validator')
 const Profile = require('../../models/ProfileSchema')
 const auth = require('../../middleware/auth')
 
+// @route       POST api/profiles/me
+// @desc        Get current users profile
+// @access      Private
+router.post("/me", auth, async (req, res) => {
+    console.log(req.body);
+    try{
+        const profile = await Profile.findOne({email: req.body.email})
+        if(!profile){
+            return res.status(400).json({ msg: "There is no profile for this user"})
+        }
+
+        res.json(profile)
+    } catch(err){
+        console.error(err.message)
+        res.status(500).send('Server Error')
+    }
+})
+
 // @route       POST api/profiles
 // @desc        Register profile
 // @access      Public

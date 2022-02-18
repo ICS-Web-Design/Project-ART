@@ -6,15 +6,36 @@ import { useNavigate } from 'react-router-dom'
 function Login() {
 
   const {auth, setAuth} = useContext(Context)
+  const {profile, setProfile} = useContext(Context)
+
   const [login, setLogin] = useState()
 
   // Redirect to home after logging in
   let nav = useNavigate()
   useEffect(() => {
     if(login === true){
+      let email = document.getElementById('email').value
+      
+      let options = {
+        headers: {
+          'x-auth-token': auth
+        }
+      }
+      axios.post('http://localhost:5000/api/profiles/me', {email}, options)
+      .then((res) => {
+        if(res.status == 200){
+          let profile = {
+            firstName: res.data.firstName,
+            lastName: res.data.lastName,
+            _id: res.data._id
+          }
+          setProfile(profile)
+          localStorage.setItem('profile', JSON.stringify(profile))
+        }
+      })
       nav('/')
     }
-  })
+  }, [login])
   
 
   const loginHandler = () => {
@@ -24,15 +45,13 @@ function Login() {
 
     axios.post('http://localhost:5000/api/profiles/login', credentials)
     .then((res) => {
-      console.log(res);
       if(res.data.token){
         setAuth(res.data.token)
         setLogin(true)
+        localStorage.setItem('token', res.data.token);
       }
     })
     .catch((err) => {
-      console.log(err.response.status);
-      console.log(err.response.data.errors[0]);
       document.querySelector('.errorContainer').innerHTML = err.response.data.errors[0].msg
     })
   }
