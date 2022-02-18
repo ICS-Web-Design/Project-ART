@@ -145,7 +145,7 @@ router.post("/login", [
             let profile = await Profile.findOne({email})
 
             if(!profile){
-                res.status(400).json({ errors: [{msg: "Invalid Credentials - No User"}]})
+                res.status(400).json({ errors: [{msg: "Invalid Credentials - Please Try Again"}]})
             }
 
 
