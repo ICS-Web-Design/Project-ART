@@ -1,9 +1,20 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import {IoMdImage, IoIosAddCircle} from 'react-icons/io'
 import {RiBookFill} from 'react-icons/ri'
 import {FaBookMedical} from 'react-icons/fa'
+import { useNavigate } from 'react-router-dom'
 
-function Portfolio() {
+import {Context} from '../Context'
+import AddArtwork from './AddArtwork'
+
+
+function Dashboard() {
+    const {profile, setProfile} = useContext(Context)
+
+    let nav = useNavigate()
+    if(profile === null){
+        nav('/login')
+    }
 
     const [view, setView] = useState("dashboard")
 
@@ -31,22 +42,10 @@ function Portfolio() {
         )
     } else if (view === "artUpload"){
         return(
-        <div className="container">
-            <div className="row">
-            <div className="six columns">
-                <h4>Upload Artwork</h4>
-                <label htmlFor="imageSel" className="btn">Select Image</label>
-                <input type="file" name="imageSel" id="imageSel" />
-                <br />
-                <input className="u-full-width" type="text" name="title" id="title" placeholder="Artwork Title" />
-                <br />
-                <textarea name="desc" className="u-full-width" id="desc" cols={30} rows={10} placeholder="Description of your masterpiece" defaultValue={""} />
-                <button type="submit">Upload</button>
-                <br />
+            <>
+                <AddArtwork></AddArtwork>
                 <button onClick={() => {setView('dashboard')}}>Cancel</button>
-            </div>
-        </div>
-        </div>
+            </>
         )
     } else if (view === 'createCollection'){
         return(
@@ -102,8 +101,8 @@ function Portfolio() {
     }
 
 //   return (
-//     <div>Portfolio</div>
+//     <div>Dashboard</div>
 //   )
 }
 
-export default Portfolio
+export default Dashboard

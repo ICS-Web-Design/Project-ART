@@ -12,7 +12,7 @@ function Navbar() {
     if(profile != null && auth !== false){
       setDisplay({
         name: profile.firstName,
-        route: '/dashboard'
+        route: `/dashboard`
       })
     } else {
       setDisplay({

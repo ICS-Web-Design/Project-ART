@@ -29,7 +29,7 @@ function Register() {
                   <br />
                   <select name="classOf" id="classOf">
                     {years.map((year) => (
-                      <option value={year}>{year}</option>
+                      <option key={year} value={year}>{year}</option>
                     ))}
                   </select>
   
