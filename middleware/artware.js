@@ -24,10 +24,10 @@ conn.once('open', () => {
 const storage = new GridFsStorage({
   url: config.mongoURI,
   file: async (req, file) => {
-    const profile = await Profile.findById(req.params.id)         // Fetch profile
+    const profile = await Profile.findById(req.body._id)         // Fetch profile
 
     if(!profile){
-      res.status(400).json({msg: "This artist does not exist"})
+      // res.status(400).json({msg: "This artist does not exist"})
     }
 
     const d = new Date();
@@ -38,6 +38,7 @@ const storage = new GridFsStorage({
       date: date,
       desc: req.body.desc,
       artist: `${profile.firstName} ${profile.lastName}`,
+      artistID: req.body._id,
       references: [],
       comments: [],
       saves: [],
@@ -55,6 +56,8 @@ const storage = new GridFsStorage({
           metadata: metadata,
           bucketName: 'artworks'
         };
+
+        req.filename = filename
 
         resolve(fileInfo);
 
