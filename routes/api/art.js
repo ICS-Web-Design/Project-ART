@@ -8,16 +8,16 @@ const Grid = require('gridfs-stream')
 const upload = artware.upload
 const remove = artware.remove
 
-// @route       POST /:id/art
+// @route       POST art/:id/post
 // @desc        Post Artwork
 // @access      Private
-router.post("/:id/art", auth, upload.single("file"), async (req, res) => {
-
+router.post("/:id/post", auth, upload.single("image"), async (req, res) => {
+    console.log(req.filename + 'dddddddddd')
     const profile = await Profile.findById(req.params.id)
 
     profile.artworks.push(req.file.id)
     await profile.save()
-    console.log(profile)
+    console.log(profile + 'ddddddddd')
 
     res.json({file: req.file})
 })
