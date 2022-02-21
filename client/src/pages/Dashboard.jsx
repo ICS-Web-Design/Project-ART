@@ -1,4 +1,5 @@
 import React, {useState, useContext} from 'react'
+import {Link, Routes} from 'react-router-dom'
 import {IoMdImage, IoIosAddCircle} from 'react-icons/io'
 import {RiBookFill} from 'react-icons/ri'
 import {FaBookMedical} from 'react-icons/fa'
@@ -22,20 +23,20 @@ function Dashboard() {
         return (
             <>
                 <div className="dashButtons container u-pull-right">
-                    <div onClick={() => {setView('artUpload')}}>
+                    <Link to={'/dashboard/art'}>
                         <IoMdImage size={30}></IoMdImage>
                         <b>Add Artwork</b>
-                    </div>
+                    </Link>
 
-                    <div onClick={() => {setView('createCollection')}}>  
+                    {/* <Link>  
                         <IoIosAddCircle size={30}/>
                         <b>Create Collection</b>
-                    </div>
+                    </Link>
 
-                    <div onClick={() => {setView('journal')}}>  
+                    <Link>  
                         <RiBookFill size={30}/>
                         <b>Journal</b>
-                    </div>
+                    </Link> */}
                 </div>
             
             </>

@@ -1,31 +1,24 @@
 import './App.css';
 import Navbar from './components/Navbar';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
-import {ContextProvider} from './Context';
+import Context, {ContextProvider} from './Context';
 
 import Login from './pages/Login';
 import Register from './pages/Register'
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
+import AddArtwork from './pages/AddArtwork';
+import ArtworkPage from './pages/ArtworkPage';
+import ArtistPortfolio from './pages/ArtistPortfolio';
 
 import axios from 'axios'
 
-axios.interceptors.response.use((response) => {
-  return response
-}, (err) => {
-  console.log(err.response)
-  if(err.response.status == 401){
-    localStorage.setItem('token', 'false');
-    localStorage.setItem('profile', null)
-  }
-  return Promise.reject(err);
-});
 
 function App() {
+
   
-  // const [auth, setAuth] = useState('false')
   return (
     <ContextProvider>
       <Router>
@@ -37,6 +30,9 @@ function App() {
             <Route exact path="/login" element={<Login/>}></Route>
             <Route exact path="/register" element={<Register/>}></Route>
             <Route path="/dashboard" element={<Dashboard />}></Route>
+            <Route path="/dashboard/art" element={<AddArtwork />}></Route>
+            <Route path='/artworks/:artid' element={<ArtworkPage/>}></Route>
+            <Route path='/artists/:id' element={<ArtistPortfolio/>}></Route>
         </Routes>
           
       </Router>

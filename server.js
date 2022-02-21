@@ -4,20 +4,25 @@ const methodOverride = require('method-override')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
-var multer = require('multer');
-var upload = multer();
+// var multer = require('multer');
+// var upload = multer();
 
 // Connect databse
 connectDB()
 
 // Middleware
-app.use(express.json({ extended: false }))
+// app.use(express.json({ extended: false }))
 app.use(methodOverride('_method'))
+
+app.use(express.urlencoded({extended: true})); 
+app.use(express.json());
 // for parsing multipart/form-data
-app.use(upload.array()); 
-app.use(express.static('public'));
+// app.use(upload.array()); 
+// app.use(express.static('public'));
+
 app.use(cors({
-    origin: '*'
+    // origin: '*',
+    methods: "GET,PUT,POST,DELETE"
 }))
 
 app.get('/', (req, res) => {
@@ -28,7 +33,7 @@ app.get('/', (req, res) => {
 app.use('/api/profiles', require('./routes/api/profiles'))
 app.use('/api/profiles', require('./routes/api/journal'))
 app.use('/api/profiles', require('./routes/api/collections'))
-app.use('/art', require('./routes/api/art'))
+app.use('/api/art', require('./routes/api/art'))
 
 const PORT = process.env.PORT || 5000;
 

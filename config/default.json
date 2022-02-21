@@ -1,4 +1,4 @@
 {
-    "mongoURI": "mongodb+srv://admin:admin123@cluster0.6bm2o.mongodb.net/projectArt?retryWrites=true&w=majority",
+    "mongoURI": "mongodb+srv://admin:admin123@cluster0.6bm2o.mongodb.net/projectART?retryWrites=true&w=majority",
     "jwtSecret": "oogabooga"
 }

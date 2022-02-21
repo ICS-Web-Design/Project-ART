@@ -20,7 +20,7 @@ function Navbar() {
         route: '/login'
       })
     }
-  }, [profile])
+  }, [profile, auth])
 
   return (
     <nav className='topnav'>

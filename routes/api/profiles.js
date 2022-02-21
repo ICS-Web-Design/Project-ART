@@ -12,7 +12,6 @@ const auth = require('../../middleware/auth')
 // @desc        Get current users profile
 // @access      Private
 router.post("/me", auth, async (req, res) => {
-    console.log(req.body);
     try{
         const profile = await Profile.findOne({email: req.body.email})
         if(!profile){

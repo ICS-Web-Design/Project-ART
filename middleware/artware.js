@@ -1,87 +1,106 @@
-const express = require('express')
-// const path = require('path')
-const crypto = require('crypto')
-const mongoose = require('mongoose')
-const multer = require('multer')
-const {GridFsStorage} = require('multer-gridfs-storage')
-const Grid = require('gridfs-stream')
-const Profile = require('../models/ProfileSchema')
-const mongo = require('mongodb')
-const config = require('config')
-const db = config.get("mongoURI")
 
-const conn = mongoose.createConnection(db)
+  // const path = require('path')
+  // const mongoose = require('mongoose')
+  // const multer = require('multer')
+  // const {GridFsStorage} = require('multer-gridfs-storage')
+  // const config = require('config')
+  // const db = config.get("mongoURI")
 
-let gfs;
+  // const conn = mongoose.createConnection(db)
 
-conn.once('open', () => {
-    // Init stream
-    console.log("Art ting")
-    gfs = Grid(conn.db, mongoose.mongo)
-    gfs.collection('artworks')
-})
+  // let gfs;
 
-const storage = new GridFsStorage({
-  url: config.mongoURI,
-  file: async (req, file) => {
-    const profile = await Profile.findById(req.body._id)         // Fetch profile
+  // conn.once('open', () => {
+  //     // Init stream
+  //     gfs = new mongoose.mongo.GridFSBucket(conn.db), {
+  //       bucketName: 'artworks'
+  //     }
+  //     console.log("Artware Active")
+  //     // gfs = Grid(conn.db, mongoose.mongo)
+  //     // gfs.collection('artworks')
+  // })
 
-    if(!profile){
-      // res.status(400).json({msg: "This artist does not exist"})
-    }
+  // // Storage engine
 
-    const d = new Date();
-    const date =`${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`
+  // const storage = new GridFsStorage({
+  //   url: config.mongoURI,
+  //   options: {useUnifiedTopology: true},
+  //   file: async (req, file) => {
+  //     return new Promise((resolve, reject) => {
+  //       try {
+  //         const d = new Date();
+  //         const date =`${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`
 
-    const metadata = {
-      title: req.body.title,
-      date: date,
-      desc: req.body.desc,
-      artist: `${profile.firstName} ${profile.lastName}`,
-      artistID: req.body._id,
-      references: [],
-      comments: [],
-      saves: [],
-      likes: []
-    }
+  //         const metadata = {
+  //           title: req.body.title,
+  //           date: date,
+  //           desc: req.body.desc,
+  //           artist: `${req.body.firstName} ${req.body.lastName}`,
+  //           artistID: req.body._id,
+  //           references: [],
+  //           comments: [],
+  //           saves: [],
+  //           likes: []
+  //         }
 
-    const filename = `${profile.firstName.substring(0,3)}-${profile.lastName.substring(0,3)}: ${metadata.title} / ${date}`
+  //         const filename = `${req.body.firstName.substring(0,3)}-${req.body.lastName.substring(0,3)}: ${metadata.title} / ${date}`
+  //         const fileInfo = {
+  //           filename: filename,
+  //           metadata: metadata,
+  //           bucketName: 'artworks'
+  //         };
 
-    return new Promise((resolve, reject) => {
+  //         req.filename = filename
 
-      try {
-        
-        const fileInfo = {
-          filename: filename,
-          metadata: metadata,
-          bucketName: 'artworks'
-        };
+  //         resolve(fileInfo);
 
-        req.filename = filename
+  //       } catch (error) {
+  //         return reject(error)
+  //       }
+  //     });
+  // }})
 
-        resolve(fileInfo);
+  // const store = multer({
+  //   storage,
+  //   limits: {fileSize: 20000000},
+  //   fileFilter: function(req, file, cb){
+  //     checkFileType(file, cb)
+  //   }
+  // })
 
-      } catch (error) {
-        return reject(error)
+  // const checkFileType = (file, cb) => {
+  //   const filetypes = /jpeg|jpg|png|gif/
+  //   const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
+  //   const mimetype = filetypes.test(file.mimetype)
+  //   if(mimetype && extname) return cb(null, true)
+  //   cb('filetype')
+  // }
+
+  // const uploadMiddleware = (req, res, next) => {
+  //   const upload = store.single('image')
+  //   upload(req, res, (err) => {
+  //     if(err instanceof multer.MulterError){
+  //       return res.status(400).send('File too large')
+  //     } else if(err){
+  //       if(err === 'filetype') return res.status(400).send('Image files only')
+  //       return res.sendStatus(500)
+  //     }
+  //     next()
+  //   })
+  // }
+
+  const remove = (artId) => {
+    gfs.remove({ _id: artId._id, root: 'uploads' }, (err, gridStore) => {
+      if (err) {
+        return res.status(404).json({ err: err });
       }
     });
   }
-});
 
-const upload = multer({ storage });
+  // const artware = {
+  //     upload: upload,
+  //     remove: remove
+  // }
 
-const remove = (artId) => {
-  gfs.remove({ _id: artId._id, root: 'uploads' }, (err, gridStore) => {
-    if (err) {
-      return res.status(404).json({ err: err });
-    }
-  });
-}
-
-const artware = {
-    upload: upload,
-    remove: remove
-}
-
-module.exports = artware;
+  // module.exports = artware;
 

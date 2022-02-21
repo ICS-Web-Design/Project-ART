@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios'
 
 function Register() {
 
@@ -11,6 +12,17 @@ function Register() {
       }
     }
     classOfYears()
+
+    const registerHandler = () => {
+      const data = {
+        firstName : document.getElementById('firstName').value,
+        lastName : document.getElementById('lastName').value,
+        email : document.getElementById('email').value,
+        password : document.getElementById('password').value,
+        classOf : document.getElementById('classOf').value
+      }
+      axios.post('http://localhost:5000/api/profiles', data)
+    }
     
     return(
         <div className="container">
@@ -18,9 +30,9 @@ function Register() {
               <div className="six columns">
                   <h4>Register</h4>
   
-                  <input type="text" className="u-full-width" placeholder='First Name'/>
+                  <input type="text" className="u-full-width" id='firstName' placeholder='First Name'/>
   
-                  <input type="text" className="u-full-width" placeholder='Last Name'/>
+                  <input type="text" className="u-full-width" id='lastName' placeholder='Last Name'/>
                   
                   <input className="u-full-width" type="email" name="email" id="email" placeholder="Email" />
   
@@ -36,7 +48,7 @@ function Register() {
                   <input className="u-full-width" type="password" name="password" id="password" placeholder='Enter Password'/>
   
                   <input className="u-full-width" type="password" name="confPassword" id="confPassword" placeholder='Confirm Password'/>
-                  <button>Register</button>
+                  <button onClick={registerHandler}>Register</button>
                   <br />
                   {/* <span onClick={() => setView('login')}>Login</span> */}
               </div>
