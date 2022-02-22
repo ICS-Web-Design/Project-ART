@@ -2,17 +2,18 @@ import React, {useContext, useEffect, useState} from 'react'
 import {BrowserRouter as Router, Routes, Route, Link} from 'react-router-dom'
 import '../App.css'
 import {Context} from '../Context'
+import axios from 'axios'
 
 function Navbar() {
-  const {auth} = useContext(Context)
+  const {authState, setAuthState} = useContext(Context)
   const {profile, setProfile} = useContext(Context)
   const [display, setDisplay] = useState({name:'Login', route: '/login'})
-
+  
   useEffect(() => {
-    if(profile != null && auth !== false){
+    if(profile != null && localStorage.getItem('token') !== null){
       setDisplay({
         name: profile.firstName,
-        route: `/dashboard`
+        route: `/artists/${profile._id}`
       })
     } else {
       setDisplay({
@@ -20,7 +21,7 @@ function Navbar() {
         route: '/login'
       })
     }
-  }, [profile, auth])
+  }, [profile, authState])
 
   return (
     <nav className='topnav'>

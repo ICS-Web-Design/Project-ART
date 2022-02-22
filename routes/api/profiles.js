@@ -8,6 +8,18 @@ const {check, validationResult} = require('express-validator')
 const Profile = require('../../models/ProfileSchema')
 const auth = require('../../middleware/auth')
 
+// @route       GET api/profiles/auth
+// @desc        Returns authentication status
+// @access      Private
+router.post("/auth", auth, async (req, res) => {
+    try{
+        res.json(req.profile)
+    } catch(err){
+        res.json(err)
+        console.log(err)
+    }
+})
+
 // @route       POST api/profiles/me
 // @desc        Get current users profile
 // @access      Private
@@ -76,7 +88,7 @@ router.post('/', [
         }
 
         // Return JWT
-        jwt.sign(payload, config.get('jwtSecret'), {expiresIn: 36000}, (err, token) => {
+        jwt.sign(payload, config.get('jwtSecret'), {expiresIn: 1800}, (err, token) => {
             if(err){
                 throw err
             } else {
@@ -127,7 +139,6 @@ router.get('/:id', async (req, res) => {
         if(!profile){
             return res.status(400).json("Profile not found")
         }
-
         res.json(profile)
 
     } catch(err){
@@ -178,7 +189,7 @@ router.post("/login", [
                 }
             }
 
-            jwt.sign(payload, config.get('jwtSecret'), {expiresIn: 36000}, (err, token) => {
+            jwt.sign(payload, config.get('jwtSecret'), {expiresIn: 1800}, (err, token) => {
                 if(err){
                     throw err
                 } else {

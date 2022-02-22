@@ -32,6 +32,44 @@
   display: block
 }
 
+.artistName{
+  font-size: 30px;
+  color: black;
+  text-decoration: none;
+}
+
+.artPageIcon{
+  padding: 0 10px;
+  cursor: pointer;
+}
+.artPageIcon:hover{
+  color: rgb(93, 93, 93);
+}
+
+.dashBtn{
+  text-decoration: none;
+  color: #bbb;
+}
+
+.dashBtn b{
+  position: relative;
+  bottom: 8px;
+  left: 10px;
+}
+
+.dashBtn:hover{
+  color: #474747;
+}
+
+.journalTextarea {
+  height: 500px;
+  width: 50%;
+  resize: both;
+}
+
+a{
+  text-decoration: none;
+}
 
 /* Grid
 –––––––––––––––––––––––––––––––––––––––––––––––––– */

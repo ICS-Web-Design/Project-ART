@@ -1,24 +1,48 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import axios from 'axios'
+import { useNavigate } from "react-router-dom";
+
 export const Context = createContext()
 
 export const ContextProvider = ({children}) => {
-    const [auth, setAuth] = useState('false')
+    const [authState, setAuthState] = useState()
     const [profile, setProfile] = useState(JSON.parse(localStorage.getItem('profile')))
     
-    axios.interceptors.response.use((response) => {
-        return response
-      }, (err) => {
+    let nav = useNavigate()
+    if(authState == 'expired'){
+        console.log("einfewun")
+        nav('/login')
+    }
+
+    setInterval(() => {
+      if(localStorage.getItem('token') !== null){
+          axios.post('http://localhost:5000/api/profiles/auth', 'auth', {
+              headers: {
+                  'x-auth-token': localStorage.getItem('token')
+              }
+          }).catch((err) => {
+              if(err.response.status === 401){
+                  localStorage.removeItem('token')
+                  localStorage.removeItem('profile')
+                  setAuthState('expired')
+              }
+          })
+      }
+    }, 600000);
+
+
+    axios.interceptors.response.use((res) => {
+        console.log(res.status)
+        return res
+    }, (err) => {
         if(err.response.status == 401){
-          localStorage.setItem('token', 'false');
-          localStorage.setItem('profile', null)
-          setAuth('false')
-          setProfile(null)
+            localStorage.removeItem('token')
+            localStorage.removeItem('profile')
         }
         return Promise.reject(err);
-      });
-
-    return <Context.Provider value={{auth, setAuth, profile, setProfile}}>
+    })
+  
+    return <Context.Provider value={{authState, setAuthState, profile, setProfile}}>
         {children}
     </Context.Provider>
 }

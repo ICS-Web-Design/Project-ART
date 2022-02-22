@@ -136,6 +136,8 @@ router.get("/:id.png", async (req, res) => {
 })
 
 router.get('/:id/data', (req, res) => {
+    const artID = req.params.id
+    id = new mongoose.Types.ObjectId(artID)
     gfs.find({_id: id}).toArray(async(err, files) => {
         const data = {
             title: files[0].metadata.title,

@@ -27,11 +27,6 @@ function AddArtwork() {
   const fileUploadHandler = () => {
     const fd = new FormData()
     fd.append('image', file, file.name)
-    // fd.append('title', document.getElementById('title').value)
-    // fd.append('desc', document.getElementById('desc').value)
-    // fd.append('firstName', profile.firstName)
-    // fd.append('lastName', profile.lastName)
-    // fd.append('_id', profile._id)
     const data = {
       title: document.getElementById('title').value,
       desc: document.getElementById('desc').value,
@@ -76,6 +71,11 @@ function AddArtwork() {
     }
   }
 
+  const cancelHandler = (e) => {
+    e.preventDefault();
+    nav(`/artists/${profile._id}`)
+  }
+
   return (
     <form className="container">
         <div className="row">
@@ -88,6 +88,8 @@ function AddArtwork() {
             <br />
             <textarea name="desc" className="u-full-width" id="desc" cols={30} rows={10} placeholder="Description of your masterpiece" defaultValue={""} />
             <button onClick={postArt}>Upload</button>
+            <br />
+            <button onClick={cancelHandler}>Cancel</button>
           </div>
         </div>
     </form>

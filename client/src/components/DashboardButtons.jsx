@@ -1,19 +1,24 @@
 import React, {useState, useContext} from 'react'
 import {Link, Routes} from 'react-router-dom'
 import {IoMdImage, IoIosAddCircle} from 'react-icons/io'
+import {IoMdLogOut} from 'react-icons/io'
 import {RiBookFill} from 'react-icons/ri'
 import {FaBookMedical} from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 
-import {Context} from '../Context'
-import AddArtwork from './AddArtwork'
+import { Context } from '../Context'
+import AddArtwork from '../pages/AddArtwork'
+import Journal from '../pages/Journal'
 
 
 function Dashboard() {
     const {profile, setProfile} = useContext(Context)
+    const {authState, setAuthState} = useContext(Context)
 
-    let nav = useNavigate()
-    if(profile === null){
+    const nav = useNavigate()
+    const logout = () => {
+        localStorage.clear()
+        setAuthState('logout')
         nav('/login')
     }
 
@@ -22,23 +27,36 @@ function Dashboard() {
     if(view === 'dashboard'){
         return (
             <>
+            <div className='columns seven'>
                 <div className="dashButtons container u-pull-right">
-                    <Link to={'/dashboard/art'}>
+
+                    <Link className='dashBtn' to={'/dashboard/art'}>
                         <IoMdImage size={30}></IoMdImage>
                         <b>Add Artwork</b>
                     </Link>
 
-                    {/* <Link>  
+                    <br />
+
+                    <Link className='dashBtn' to={'/dashboard/art'}>  
                         <IoIosAddCircle size={30}/>
                         <b>Create Collection</b>
                     </Link>
 
-                    <Link>  
+                    <br />
+
+                    <Link className='dashBtn' to={'/dashboard/journal'}>  
                         <RiBookFill size={30}/>
                         <b>Journal</b>
-                    </Link> */}
+                    </Link>
+
+                    <br />
+
+                    <div className="dashBtn" onClick={logout}>
+                        <IoMdLogOut size={30}></IoMdLogOut>
+                        <b>Logout</b>
+                    </div>
                 </div>
-            
+            </div>
             </>
         )
     } else if (view === "artUpload"){
@@ -100,10 +118,6 @@ function Dashboard() {
             </div>
         )
     }
-
-//   return (
-//     <div>Dashboard</div>
-//   )
 }
 
 export default Dashboard

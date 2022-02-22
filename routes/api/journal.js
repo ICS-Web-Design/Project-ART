@@ -18,9 +18,12 @@ router.post('/:id/journal', auth, async (req, res) => {
         res.status(400).json({msg: "This artist does not exist"})
     }
 
+    let d = new Date()
+    let date = `${d.getDate()}/${d.getMonth()}/${d.getFullYear()}`
     const post = {
         title: req.body.title,
         body: req.body.body,
+        date,
         artworks: req.body.artworks
     }
 
@@ -70,7 +73,6 @@ router.post('/:id/journal/:index', auth, async (req, res) => {
     if(index > profile.journals.length - 1 || index < profile.journals.length - 1){
         res.status(400).json({msg: "This journal does not exist"})
     }
-
     const post = {
         title: req.body.title,
         body: req.body.body,
@@ -99,8 +101,13 @@ router.get('/:id/journal/:index', async (req, res) => {
     if(index > profile.journals.length - 1 || index < profile.journals.length - 1){
         res.status(400).json({msg: "This journal does not exist"})
     }
+    
+    let data = {
+        post: profile.journals[index],
+        artist: `${profile.firstName} ${profile.lastName}`
+    }
 
-    res.json(profile.journals[index])
+    res.json(data)
 })
 
 module.exports = router

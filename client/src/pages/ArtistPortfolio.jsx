@@ -1,10 +1,11 @@
 import React,{useEffect, useState} from 'react'
-import {useParams, Link} from 'react-router-dom'
+import {useParams, Link, useNavigate} from 'react-router-dom'
 import axios from 'axios'
 import ArtThumbnail from '../components/ArtThumbnail'
+import DashboardButtons from '../components/DashboardButtons'
+import { cookie } from 'express-validator'
 
 function ArtistPortfolio() {
-    console.log("XXX")
 
     const [profile, setProfile] = useState({
         firstName: '',
@@ -17,6 +18,12 @@ function ArtistPortfolio() {
     
     const params = useParams()
 
+    let nav = useNavigate()
+    let dashboardButtons = ''
+    if(profile._id === params.id){
+        dashboardButtons = <DashboardButtons/>
+    }
+
     let artThumbnails;
     
     useEffect(() => {
@@ -24,6 +31,8 @@ function ArtistPortfolio() {
         .then((res) => {
             setProfile(res.data)
             setLoaded(true)
+        }).catch((err) => {
+            console.log(err);
         })
     }, [])
 
@@ -34,40 +43,23 @@ function ArtistPortfolio() {
                     <ArtThumbnail artId={art} key={index}></ArtThumbnail>
                 )        
         })
-        console.log(artThumbnails)
+        artThumbnails = artThumbnails.reverse()
     }
-
-    // useEffect(() => {
-    //     let newThumbnails = []
-    //     profile.artworks.forEach((art, index) => {
-    //         console.log(index, newThumbnails[index])
-    //         newThumbnails.push(
-    //                 <ArtThumbnail artId={art} key={index}></ArtThumbnail>
-    //             )  
-    //     })
-    //     setThumbnails(newThumbnails)   
-    //     console.log(thumbnails)
-    // }, [loaded])
-    
-   
-
 
     if(loaded === true){
 
         return (
             <div className='container'>
-                <div id="container flex" style={{padding: '2%'}}>
-                    <div className="row">
-                        {/* <div className="column one"> 
-                            <div style={{background: '#C4C4C4', borderRadius: '50%', width: '100px', height: '100px'}}> </div>
-                        </div> */}
-                        <div className="column two">
-                            <div className="row">
+                <div id="container flex">
+                        <div className="row">
+                            <div className="columns four u-pull-left">
                                 <h5>{profile.firstName + " " + profile.lastName}</h5>
                                 <h5>Class 0f: {profile.classOf} </h5>
                             </div>
+                            
+                            {dashboardButtons}
                          </div>
-                </div>
+
         
         
                 <div className="row" style={{paddingTop: '2%'}}>
@@ -125,7 +117,7 @@ function ArtistPortfolio() {
     } else {
         return(
             <div className="container">
-                eirufh
+                LOADING
             </div>
         )
     }

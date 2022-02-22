@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 function ArtThumbnail(props) {
 
@@ -13,20 +14,22 @@ function ArtThumbnail(props) {
         axios.get(`http://localhost:5000/api/art/${artId}/data`)
         .then((res) => {
             setArtData(res.data)
+            console.log(artData)
         })
     }, [])
 
     
   return (
+      <Link to={`/artworks/${artId}`}>
         <div className="row">
-            <h1>{props.key}</h1>
             <div className="columns four">
-                <h2 style={{paddingLeft: '2%'}}>{artData.title}</h2>
+                <h4 style={{paddingLeft: '4%'}}>{artData.title}</h4>
                 <img src={`http://localhost:5000/api/art/${artId}.png`} style={{width:'500px'}} alt="" />
             </div>
-            <p className='columns six'>{artData.desc}</p>
-            <hr />
+            <p className='columns six' style={{marginTop: '10%'}}>{artData.desc}</p>
         </div>
+            <hr />
+      </Link>
   )
 }
 

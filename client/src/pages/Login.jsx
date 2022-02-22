@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 function Login() {
 
-  const {auth, setAuth} = useContext(Context)
+  const {authState, setAuthState} = useContext(Context)
   const {profile, setProfile} = useContext(Context)
 
   const [login, setLogin] = useState()
@@ -18,7 +18,7 @@ function Login() {
       
       let options = {
         headers: {
-          'x-auth-token': auth
+          'x-auth-token': localStorage.getItem('token')
         }
       }
       axios.post('http://localhost:5000/api/profiles/me', {email}, options)
@@ -46,9 +46,9 @@ function Login() {
     axios.post('http://localhost:5000/api/profiles/login', credentials)
     .then((res) => {
       if(res.data.token){
-        setAuth(res.data.token)
-        setLogin(true)
         localStorage.setItem('token', res.data.token);
+        setAuthState('logged in')
+        setLogin(true)
       }
     })
     .catch((err) => {
