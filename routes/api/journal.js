@@ -31,7 +31,7 @@ router.post('/:id/journal', auth, async (req, res) => {
 
     await profile.save()
 
-    res.json(profile)
+    res.json(profile.journals.length-1)   // SEND JOURNAL INSTEAD OF PROFILE
 
 })
 
@@ -98,16 +98,18 @@ router.get('/:id/journal/:index', async (req, res) => {
 
     const index = req.params.index
 
-    if(index > profile.journals.length - 1 || index < profile.journals.length - 1){
-        res.status(400).json({msg: "This journal does not exist"})
+    if(index > profile.journals.length - 1 || index < 0){
+        res.status(404).json({msg: "This journal does not exist"})
+    } else {
+
+        let data = {
+            post: profile.journals[index],
+            artist: `${profile.firstName} ${profile.lastName}`
+        }
+    
+        res.json(data)
     }
     
-    let data = {
-        post: profile.journals[index],
-        artist: `${profile.firstName} ${profile.lastName}`
-    }
-
-    res.json(data)
 })
 
 module.exports = router

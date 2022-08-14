@@ -7,7 +7,6 @@
 * 12/29/2014
 */
 
-
 /* Table of contents
 ––––––––––––––––––––––––––––––––––––––––––––––––––
 - Grid
@@ -26,7 +25,8 @@
 */
 
 /* CUSTOM STYLING */
-.centerImage{
+.artworkPageImage{
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
   display: block
@@ -59,6 +59,7 @@
 
 .dashBtn:hover{
   color: #474747;
+  cursor: pointer;
 }
 
 .journalTextarea {

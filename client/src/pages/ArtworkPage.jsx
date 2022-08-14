@@ -5,6 +5,8 @@ import {BsBookmarkFill} from 'react-icons/bs'
 import {FaHeart} from 'react-icons/fa'
 
 function ArtworkPage() {
+  
+  const [bodyMarginLeft, setBodyMarginLeft] = useState({marginLeft: 200 + 'px'})
 
   const [art, setArt] = useState({
     image: 'ddd',
@@ -22,28 +24,35 @@ function ArtworkPage() {
     })
   }, [])
 
+  
+  useEffect(() => {
 
-  return (
-    <div className='container'>
-        <img className='centerImage' src={`http://localhost:5000/api/art/${artID}.png`} alt="" />
-        <br /><br />
+    function getOffset(el) {
+      const rect = el.getBoundingClientRect();
+      return rect.left + window.scrollX
+    }
 
-        <span>
-          <h1 style={{display: 'inline'}}>{art.title}</h1>
-          <div className="u-pull-right">
-              <FaHeart className="artPageIcon" size={40}/>
-              <BsBookmarkFill className="artPageIcon" size={40}/>
-          </div>
-        </span>
+    let px = getOffset(document.getElementById('artIMG'))
+    setBodyMarginLeft({marginLeft: px + 'px'})
+    console.log(bodyMarginLeft);
+  }, [])
 
-        <br /><br />
-        <div id="artInfo">
+  return(
+    <div className="container mx-auto">
 
-          <Link className='artistName' to={`/artists/${art.artistId}`}>{art.artist}</Link>
-          <h4>{art.date.toString().substring(0,10)}</h4>
-          <p>{art.desc}</p>
-          
+      <div className="container mb-40">
+        <img id='artIMG' className='mx-auto shadow-inner shadow-3xl' src={`http://localhost:5000/api/art/${artID}.png`} alt="" />
+
+        <div style={{bodyMarginLeft}}>
+          <h1 className='text-6xl font-bold mt-10 text-primary'>{art.title}</h1>
+          <br />
+          <Link className='text-4xl my-20' to={`/artists/${art.artistId}`}>{art.artist}</Link>
+          <h4 className='text-2xl'>{art.date.toString().substring(0,10)}</h4>
+          <p className='mt-4'>{art.desc}</p>
         </div>
+        
+      </div>
+      
     </div>
   )
 }

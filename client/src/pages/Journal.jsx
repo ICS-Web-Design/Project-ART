@@ -3,6 +3,7 @@ import {FaBookMedical} from 'react-icons/fa'
 import axios from 'axios'
 import {Context} from '../Context'
 import { useNavigate, Link } from 'react-router-dom'
+import LoadingGif from '../components/LoadingGif'
 
 function Journal() {
     const {profile} = useContext(Context)
@@ -12,11 +13,12 @@ function Journal() {
     useEffect(() => {
         axios.get(`http://localhost:5000/api/profiles/${profile._id}`)
             .then((res) => {
+                console.log(res.data.journals);
                 setJournalList(res.data.journals.map((journal, index) => {
                     // /:id/journal/:index
-                    return (<Link to={`/artists/${profile._id}/journal/${index}`} key={index}>
-                        <b>{journal.title}</b>
-                        <span>{journal.date}</span>
+                    return (<Link className='card card-bordered shadow-md mt-3' to={`/artists/${profile._id}/journal/${index}`} key={index}>
+                        <b className='mr-10 ml-5 mt-2 card-title'>{journal.title}</b>
+                        <span className='ml-5'>{journal.date}</span>
                         <br />
                         </Link>)
                 }))
@@ -32,20 +34,15 @@ function Journal() {
     let nav = useNavigate()
 
     if(loaded === true){
-        console.log(journalList)
         return(
-            <div className='container'>
-                <h4>Journals</h4>
-                <div className="container u-pull-right" onClick={navToNewJournal}>
-                    <FaBookMedical size={20}></FaBookMedical>
-                    <b>New Entry</b>
+            <div className='container mx-auto'>
+                <h4 className='text-4xl font-bold text-primary mb-10'>Journals</h4>
+                <div className="cursor-pointer" onClick={() => navToNewJournal()}>
+                    <FaBookMedical color={'hsl(var(--p))'} size={40}></FaBookMedical>
+                    <b className='float-left text-primary'>New Entry</b>
                 </div>
                 <br />
-                <div className="journalList">
-                    <b>Post Title</b>
-                    <span>MM/DD/YYYY</span>
-                    
-                </div>
+                <br />
 
                 <div>
                 {journalList}
@@ -54,7 +51,9 @@ function Journal() {
         )
     } else {
         return(
-            <div>loading</div>
+            <div className="container mx-auto">
+                <div className="btn loading btn-block mx-auto">LOADING</div>
+            </div>
         )
     }
     

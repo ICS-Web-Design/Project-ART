@@ -117,6 +117,23 @@ router.post("/post", auth, uploadMiddleware, async (req, res) => {
     }
 })
 
+// GET ALL IMAGES
+router.get('/all', (req, res) => {
+    try {
+        let artList = []
+        var gfs = Grid(conn.db, mongo);
+        gfs.collection('uploads')
+        gfs.files.find().toArray((err, files) => {
+            files.forEach((file) => {
+                artList.push(file._id)
+            })
+            res.json(artList)
+        })
+    } catch (error) {
+        
+    }
+})
+
 // STREAM IMAGE
 router.get("/:id.png", async (req, res) => {
     try {
@@ -136,18 +153,23 @@ router.get("/:id.png", async (req, res) => {
 })
 
 router.get('/:id/data', (req, res) => {
-    const artID = req.params.id
-    id = new mongoose.Types.ObjectId(artID)
-    gfs.find({_id: id}).toArray(async(err, files) => {
-        const data = {
-            title: files[0].metadata.title,
-            desc: files[0].metadata.desc,
-            date: files[0].uploadDate,
-            artist: files[0].metadata.artist,
-            artistId: files[0].metadata.artistId
-        }
-        res.json(data)
-    })
+    try {
+        console.log(req.params.id);
+        id = new mongoose.Types.ObjectId(req.params.id)
+        gfs.find({_id: id}).toArray(async(err, files) => {
+            const data = {
+                title: files[0].metadata.title,
+                desc: files[0].metadata.desc,
+                date: files[0].uploadDate,
+                artist: files[0].metadata.artist,
+                artistId: files[0].metadata.artistId
+            }
+            res.json(data)
+        })
+    } catch (error) {
+        console.log(error);
+    }
+    
 })
 
 // ARTIST PAGE DISPLAY IAMGES

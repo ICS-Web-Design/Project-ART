@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {BrowserRouter as Router, Routes, Route, Link} from 'react-router-dom'
-import '../App.css'
 import {Context} from '../Context'
 import axios from 'axios'
 
@@ -24,18 +23,20 @@ function Navbar() {
   }, [profile, authState])
 
   return (
-    <nav className='topnav'>
-
-        <div className="container">
-   
-            <Link to="/">Home</Link>
-            <Link to="/gallery">Gallery</Link>
-            <Link to="/exhibitions">Exhibitions</Link>
-            <Link to="/artists">Artists</Link>
-            <Link to={display.route}>{display.name}</Link>
-        </div>
-            
-    </nav>
+    <div className="navbar shadow-xl mb-10">
+      <div className="flex-1">
+        <a className="btn btn-ghost normal-case text-xl">Project ART</a>
+      </div>
+      <div className="flex-none">
+        <ul className="menu menu-horizontal p-0">
+          <Link className='mx-10' to="/">Home</Link>
+          <Link className='mx-10' to="/gallery">Gallery</Link>
+          <Link className='mx-10' to="/artists">Artists</Link>
+          <Link className='mx-10' to="/about">About</Link>
+          <a className='mx-10' href={display.route}>{display.name}</a>
+        </ul>
+      </div>
+    </div>
   )
 }
 

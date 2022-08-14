@@ -12,6 +12,20 @@ function Login() {
 
   // Redirect to home after logging in
   let nav = useNavigate()
+  const navToRegister = () => {
+    nav('/register')
+  }
+
+  const [errorMessage, setErrorMessage] = useState('')
+
+  useEffect(() => {
+    if(errorMessage != ''){
+      setTimeout(() => {
+        setErrorMessage('')
+      }, 3000);
+    }
+  }, [errorMessage])
+
   useEffect(() => {
     if(login === true){
       let email = document.getElementById('email').value
@@ -52,26 +66,32 @@ function Login() {
       }
     })
     .catch((err) => {
-      document.querySelector('.errorContainer').innerHTML = err.response.data.errors[0].msg
+      setErrorMessage(
+        <div className="alert alert-error shadow-lg">
+          {err.response.data.errors[0].msg}
+        </div>
+      )
     })
   }
 
 
     return (
-      <div className="container">
+      <div className="container mx-auto">
         <div className="row">
-          <div className="six columns">
-              <h4>Login</h4>
+          <div className="six columns float-left">
+              <h4 className='font-bold text-xl mb-4'>Login</h4>
               
-              <input className="u-full-width" type="email" name="email" id="email" placeholder="Email" />
+              <input className="input text-primary input-bordered mb-5" type="email" name="email" id="email" placeholder="Email" />
               <br />
-              <input className="u-full-width" type="password" name="password" id="password" />
-              <button onClick={loginHandler}>Login</button>
+              <input className="input text-primary input-bordered mb-5" type="password" name="password" id="password" placeholder='Password'/>
               <br />
-              {/* <span onClick={()=>{setView('register')}}>Register</span> */}
+              <button className='btn btn-primary' onClick={loginHandler}>Login</button>
+              <br />
+              <span className='btn btn-ghost mt-4 ' onClick={navToRegister}>Register</span>
               
-              <div className="errorContainer error"></div>
+              
           </div>
+          <div className="float-left mt-10 ml-10">{errorMessage}</div>
         </div>
       </div>
     )

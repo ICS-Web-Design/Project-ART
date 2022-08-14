@@ -10,25 +10,25 @@ export const ContextProvider = ({children}) => {
     
     let nav = useNavigate()
     if(authState == 'expired'){
-        console.log("einfewun")
+        console.log('Auth Expired')
         nav('/login')
     }
 
-    setInterval(() => {
-      if(localStorage.getItem('token') !== null){
-          axios.post('http://localhost:5000/api/profiles/auth', 'auth', {
-              headers: {
-                  'x-auth-token': localStorage.getItem('token')
-              }
-          }).catch((err) => {
-              if(err.response.status === 401){
-                  localStorage.removeItem('token')
-                  localStorage.removeItem('profile')
-                  setAuthState('expired')
-              }
-          })
-      }
-    }, 600000);
+    // setInterval(() => {
+    //   if(localStorage.getItem('token') !== null){
+    //       axios.post('http://localhost:5000/api/profiles/auth', 'auth', {
+    //           headers: {
+    //               'x-auth-token': localStorage.getItem('token')
+    //           }
+    //       }).catch((err) => {
+    //           if(err.response.status === 401){
+    //               localStorage.removeItem('token')
+    //               localStorage.removeItem('profile')
+    //               setAuthState('expired')
+    //           }
+    //       })
+    //   }
+    // }, 600000);
 
 
     axios.interceptors.response.use((res) => {

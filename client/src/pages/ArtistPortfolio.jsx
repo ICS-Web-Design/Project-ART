@@ -1,123 +1,122 @@
-import React,{useEffect, useState} from 'react'
+import React,{useEffect, useState, useContext} from 'react'
 import {useParams, Link, useNavigate} from 'react-router-dom'
 import axios from 'axios'
 import ArtThumbnail from '../components/ArtThumbnail'
 import DashboardButtons from '../components/DashboardButtons'
-import { cookie } from 'express-validator'
+import LoadingGif from '../components/LoadingGif'
+import { Context } from '../Context'
 
 function ArtistPortfolio() {
 
-    const [profile, setProfile] = useState({
+    const [viewProfile, setViewProfile] = useState({
         firstName: '',
         lastName: '',
-        artworks: [0],
+        artworks: [],
         state: null
     })
-    const [loaded, setLoaded] = useState(false)
-    const [thumbnails, setThumbnails] = useState([])
     
+    const {profile, setProfile} = useContext(Context)
+    const [loaded, setLoaded] = useState(false)
+    const [view, setView] = useState('artworks')
+    const [displayItems, setDisplayItems] = useState([])
+    
+    let nav = useNavigate()
     const params = useParams()
 
-    let nav = useNavigate()
     let dashboardButtons = ''
-    if(profile._id === params.id){
-        dashboardButtons = <DashboardButtons/>
-    }
 
-    let artThumbnails;
+    if(profile != null){
+        if(params.id == profile._id && localStorage.getItem('token')){
+            dashboardButtons = <DashboardButtons></DashboardButtons>
+        }
+    }
+    
     
     useEffect(() => {
         axios.get(`http://localhost:5000/api/profiles/${params.id}`)
         .then((res) => {
-            setProfile(res.data)
+            setViewProfile(res.data)
             setLoaded(true)
         }).catch((err) => {
-            console.log(err);
+            setLoaded('ERROR')
         })
-    }, [])
+    }, [params.id])
 
-    if(loaded === true && profile.firstName != ''){
-        artThumbnails = profile.artworks.map((art, index) => {
-            console.log(index)
-            return(
-                    <ArtThumbnail artId={art} key={index}></ArtThumbnail>
-                )        
-        })
-        artThumbnails = artThumbnails.reverse()
-    }
+    useEffect(() => {
+        if(loaded === true && viewProfile.firstName != ''){
+            console.log(viewProfile.artworks);
+            setDisplayItems(
+                viewProfile.artworks.map((art, index) => {
+                    return(
+                            <ArtThumbnail artId={art} key={index}></ArtThumbnail>
+                        )        
+                }).reverse()
+            )
+        }
+    }, [loaded, params.id])
+
+    useEffect(() => {
+        if(view == 'artworks'){
+            setDisplayItems(
+                viewProfile.artworks.map((art, index) => {
+                    return(
+                            <ArtThumbnail artId={art} key={index}></ArtThumbnail>
+                        )        
+                }).reverse()
+            )
+            if(document.getElementById('artworksBtn') != null){
+                document.getElementById('artworksBtn').className = 'text-primary cursor-pointer btn btn-primary text-neutral'
+                document.getElementById('journalBtn').className = 'text-primary cursor-pointer ml-80 btn-outline btn'
+            }
+        } else if (view == 'journals'){
+            setDisplayItems(viewProfile.journals.map((journal, index) => {
+                return (<Link className='card card-bordered shadow-md' to={`/artists/${viewProfile._id}/journal/${index}`} key={index}>
+                    <b className='mr-10 ml-5 mt-2 card-title'>{journal.title}</b>
+                    <span className='text-xl ml-5'>{journal.date}</span>
+                    <br />
+                    </Link>)
+            }))
+            if(document.getElementById('journalBtn') != null){
+                document.getElementById('journalBtn').className = 'text-primary cursor-pointer btn ml-80 btn-primary text-neutral'
+                document.getElementById('artworksBtn').className = 'text-primary cursor-pointer btn-outline btn'
+            }
+        } else {
+            setDisplayItems([])
+        }
+    }, [view, params.id])
 
     if(loaded === true){
 
         return (
-            <div className='container'>
-                <div id="container flex">
-                        <div className="row">
-                            <div className="columns four u-pull-left">
-                                <h5>{profile.firstName + " " + profile.lastName}</h5>
-                                <h5>Class 0f: {profile.classOf} </h5>
-                            </div>
-                            
-                            {dashboardButtons}
-                         </div>
-
-        
-        
-                <div className="row" style={{paddingTop: '2%'}}>
-                    <div className="columns three">
-                    <h5>Artworks</h5>
-                    </div>
-                    <div className="columns three" style={{textAlign: 'right'}}>
-                    <h5>Collection</h5>
-                    </div>
-                </div>
-                </div>
-                <div id="container flex" style={{paddingLeft: '2%'}}>
-                    <hr />
+            <div className='container mx-auto '>
                 
-                <div>
-                    {artThumbnails}
+                <div className='h-60'>
+                    <div className="float-left">
+                        <h1 className='font-bold text-4xl text-primary'>{viewProfile.firstName + " " + viewProfile.lastName}</h1>
+                        <h5 className='text-2xl'>Class Of: {viewProfile.classOf} </h5>
+                    </div>
+                    {dashboardButtons}      
                 </div>
 
+                <div className='mt-10'>
+                    <span onClick={() => setView('artworks')} className='text-primary cursor-pointer btn btn-primary text-neutral' id='artworksBtn'>Artworks</span>
+                    <span onClick={() => setView('journals')} className='text-primary cursor-pointer ml-80 btn-outline btn' id='journalBtn'>Journal</span>
+                    <hr className='my-5' />
+                    {displayItems}
+                </div>
 
-                {/* <div className="row">
-                    <div className="columns six">
-                    <div className="row">
-                        <div style={{width: '100%', height: '250px', border: '1px solid #000', backgroundColor: '#E5E5E5'}} />
-                    </div>
-                    <div className="row">
-                        <h4 style={{paddingLeft: '2%'}}>"Title"</h4>
-                    </div>
-                    </div>
-                </div> */}
-        
-                
-                </div>
-                <div id="container flex" style={{paddingLeft: '2%'}}>
-                <div className="row">
-                    <div className="columns seven">
-                    <div className="row">
-                        <div style={{width: '100%', height: '350px', border: '1px solid #000', backgroundColor: '#E5E5E5'}} />
-                    </div>
-                    </div>
-                    <div className="columns three">
-                    <div className="row">
-                        <h4>Collection Title</h4>
-                    </div>
-                    <div className="row">
-                        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut 
-                        labore et dolore magna. "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-                        eiusmod tempor incididunt ut labore et dolore magna.
-                        </p>
-                    </div>
-                    </div>
-                </div>
-            </div>
           </div>
           )
-    } else {
+    } else if(loaded === false){
+        return(
+            <div className="container mx-auto">
+                <div className="btn loading btn-block btn-lg mx-auto">Loading</div>
+            </div>
+        )
+    } else if(loaded === 'ERROR'){
         return(
             <div className="container">
-                LOADING
+                <h1>Error: Please try again</h1>
             </div>
         )
     }

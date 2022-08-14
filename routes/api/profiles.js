@@ -7,6 +7,7 @@ const config = require('config')
 const {check, validationResult} = require('express-validator')
 const Profile = require('../../models/ProfileSchema')
 const auth = require('../../middleware/auth')
+const mongoose = require('mongoose')
 
 // @route       GET api/profiles/auth
 // @desc        Returns authentication status
@@ -16,7 +17,7 @@ router.post("/auth", auth, async (req, res) => {
         res.json(req.profile)
     } catch(err){
         res.json(err)
-        console.log(err)
+        // console.log(err)
     }
 })
 
@@ -32,7 +33,7 @@ router.post("/me", auth, async (req, res) => {
 
         res.json(profile)
     } catch(err){
-        console.error(err.message)
+        // console.error(err.message)
         res.status(500).send('Server Error')
     }
 })
@@ -133,8 +134,8 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     
     try{
-
-        let profile = await Profile.findById(req.params.id)     // Find profile by id
+        let id = mongoose.Types.ObjectId(req.params.id)
+        let profile = await Profile.findById(id)     // Find profile by id
 
         if(!profile){
             return res.status(400).json("Profile not found")
@@ -198,7 +199,7 @@ router.post("/login", [
             })
         }
     } catch(err){
-        console.log(err.message)
+        // console.log(err.message)
         // res.status(500).send('Server Error...wddwwd')
     }
 
